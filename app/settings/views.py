@@ -1,7 +1,6 @@
 from django.views.generic import (
     ListView,
     CreateView,
-    RetrieveView,
     UpdateView,
     DeleteView
 )
@@ -14,6 +13,16 @@ class CourseList(ListView):
     model = Course
     template_name = "courses/list.html"
     context_object_name = "courses"
+
+    def get_queryset(self):
+        query = self.request.GET.get("q")
+
+        if query:
+            return Course.objects.filter(
+                title__icontains=query
+            )
+        
+        return Course.objects.all()
 
 class CourseCreate(CreateView):
     model = Course
